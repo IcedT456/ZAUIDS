@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WX - Pre-Duty Briefing Video</title>
+<style>
+body {
+  font-family: monospace;
+  margin: 0;
+  background-color: #0a0a0a;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+header {
+  background-color: #1f1f1f;
+  padding: 1rem;
+  border-bottom: 2px solid #444;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+header h1 { font-size: 1.8rem; margin:0; }
+#userInfo { font-size:1.4rem; }
+#logoutBtn {
+  padding: 0.4rem 1rem;
+  background-color: #ff0000;
+  color: #fff;
+  border-radius: 5px;
+  border:none;
+  cursor:pointer;
+}
+#logoutBtn:hover { background-color:#cc0000; }
+
+.main-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+video {
+  width: 100%;
+  max-width: 1200px;
+  height: auto;
+  border: 2px solid #444;
+  border-radius: 5px;
+}
+
+.footer {
+  flex-shrink: 0;
+  background-color:#1f1f1f;
+  border-top:2px solid #444;
+  display:flex;
+  justify-content:center;
+  padding:0.75rem 0;
+  gap:0.5rem;
+}
+.footer a{
+  padding:0.5rem 1.5rem;
+  background-color: #18B28E;
+  color: #fff;
+  text-decoration: none;
+  border-radius:5px;
+  font-weight:bold;
+  font-size:1.2rem;
+  transition: background-color 0.2s;
+}
+.footer a:hover { background-color:#139770; }
+</style>
+</head>
+<body>
+<header>
+  <h1>WX - Pre-Duty Briefing</h1>
+  <div style="display:flex; align-items:center; gap:1rem;">
+    <span id="userInfo"></span>
+    <button id="logoutBtn" style="display:none;">Logout</button>
+  </div>
+</header>
+
+<div class="main-content">
+  <video controls>
+    <source src="https://www.weather.gov/media/zau/zaupredutywxbriefing.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+</div>
+
+<div class="footer">
+  <a href="index.html">SIA</a>
+  <a href="wx.html">WX</a>
+  <a href="sop.html">SOP</a>
+  <a href="pireps.html">PIREPS</a>
+  <a href="brief.html">BRIEF</a>
+</div>
+
+<script>
+// LOGIN CHECK
+const userInfo = document.getElementById("userInfo");
+const logoutBtn = document.getElementById("logoutBtn");
+
+function updateUser(){
+  const pos = localStorage.getItem("position");
+  const init = localStorage.getItem("initials");
+  if(pos && init){
+    userInfo.textContent = `${pos} (${init})`;
+    logoutBtn.style.display="inline-block";
+  } else {
+    alert("You must log in to view WX!");
+    window.location.href="index.html";
+  }
+}
+
+logoutBtn.addEventListener("click", ()=>{
+  localStorage.clear();
+  window.location.href="index.html";
+});
+
+updateUser();
+</script>
+</body>
+</html>

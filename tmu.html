@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TMU Dashboard</title>
+<style>
+  body { font-family: monospace; margin:0; background-color:#0a0a0a; color:#fff; }
+  header { display:flex; justify-content:space-between; align-items:center; background-color:#1f1f1f; padding:1rem; border-bottom:2px solid #444; }
+  header h1 { font-size:1.8rem; margin:0; }
+  #userInfo { font-weight:bold; }
+  #logoutBtn { padding:0.4rem 1rem; background-color:#ff0000; color:#fff; border-radius:5px; border:none; cursor:pointer; }
+  #logoutBtn:hover { background-color:#cc0000; }
+
+  #activeSplit { width:100%; max-width:600px; display:block; margin:1rem auto; border:2px solid #4ade80; border-radius:5px; }
+
+  #tmuBox { margin:1rem; padding:1rem; border:2px solid #4ade80; border-radius:8px; background-color:#1f1f1f; max-height:400px; overflow-y:auto; }
+  #tmuBox div { padding:0.25rem 0; border-bottom:1px solid #333; }
+  #tmuInput { width:100%; padding:0.5rem; font-size:1rem; margin-top:0.5rem; background-color:#0a0a0a; color:#fff; border:2px solid #4ade80; border-radius:5px; }
+  #sendBtn, #clearBtn { padding:0.4rem 1rem; font-weight:bold; margin-top:0.5rem; border:none; border-radius:5px; cursor:pointer; }
+  #sendBtn { background-color:#00ff00; color:#000; }
+  #sendBtn:hover { background-color:#00cc00; }
+  #clearBtn { background-color:#ff0000; color:#fff; margin-left:0.5rem; }
+  #clearBtn:hover { background-color:#cc0000; }
+
+  .footer { position:fixed; bottom:0; left:0; width:100%; background-color:#1f1f1f; border-top:2px solid #444; display:flex; justify-content:center; padding:0.75rem 0; gap:0.5rem; z-index:1000; }
+  .footer a { padding:0.5rem 1.5rem; background-color:#18B28E; color:#fff; text-decoration:none; border-radius:5px; font-weight:bold; font-size:1.2rem; transition:background-color 0.2s; }
+  .footer a:hover { background-color:#139770; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>TMU Dashboard</h1>
+  <div>
+    <span id="userInfo"></span>
+    <button id="logoutBtn">Logout</button>
+  </div>
+</header>
+
+<img id="activeSplit" src="https://i.ibb.co/4Zs2WdDN/3-HIGH.png" alt="Active Split">
+
+<div id="tmuBox"></div>
+<input type="text" id="tmuInput" placeholder="Enter TMU message here...">
+<button id="sendBtn">Send</button>
+<button id="clearBtn">Clear</button>
+
+<div class="footer">
+  <a href="index.html">SIA</a>
+  <a href="wx.html">WX</a>
+  <a href="sop.html">SOP</a>
+  <a href="pireps.html">PIREPS</a>
+  <a href="brief.html">BRIEF</a>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyBQhVG2_qIDV1R-fYuKkNdWxGriVImW5xs",
+    authDomain: "zauids.firebaseapp.com",
+    databaseURL: "https://zauids-default-rtdb.firebaseio.com",
+    projectId: "zauids",
+    storageBucket: "zauids.firebasestorage.app",
+    messagingSenderId: "903788512771",
+    appId: "1:903788512771:web:562b3abc452bf378b4b036",
+    measurementId: "G-RDV11VC8Z1"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  const tmuBox = document.getElementById('tmuBox');
+  const tmuInput = document.getElementById('tmuInput');
+  const sendBtn = document.getElementById('sendBtn');
+  const clearBtn = document.getElementById('clearBtn');
+  const userInfo = document.getElementById('userInfo');
+  const logoutBtn = document.getElementById('logoutBtn');
+
+  const allowedPositions = ["ZAU_TMU", "CHI_TMU"];
+  const allowedIns = ["CS", "AF"];
+
+  const position = localStorage.getItem("position");
+  const initials = localStorage.getItem("initials");
+  if(!position || !initials) { alert("Please login first."); window.location.href="index.html"; }
+  userInfo.textContent = `${position} (${initials})`;
+
+  logoutBtn.addEventListener("click", ()=>{
+    localStorage.clear();
+    window.location.href="index.html";
+  });
+
+  const canEdit = allowedPositions.includes(position) || allowedIns.includes(initials);
+  if(!canEdit){
+    tmuInput.disabled = true;
+    sendBtn.disabled = true;
+    clearBtn.disabled = true;
+  }
+
+  // Firebase live TMU messages
+  const messagesRef = db.ref('tmuMessages');
+  messagesRef.on('value', snapshot=>{
+    const msgs = snapshot.val() || [];
+    tmuBox.innerHTML = '';
+    msgs.forEach(m=>{
+      const div = document.createElement('div');
+      div.textContent = m.text;
+      tmuBox.appendChild(div);
+    });
+    tmuBox.scrollTop = tmuBox.scrollHeight;
+  });
+
+  // Send message
+  sendBtn.addEventListener('click', ()=>{
+    const msg = tmuInput.value.trim();
+    if(msg){
+      messagesRef.push({
+        text: msg,
+        sender: `${position}(${initials})`,
+        timestamp: Date.now()
+      });
+      tmuInput.value = '';
+    }
+  });
+
+  // Clear messages
+  clearBtn.addEventListener('click', ()=>{
+    if(canEdit && confirm("Are you sure you want to clear all TMU messages?")){
+      messagesRef.remove();
+    }
+  });
+</script>
+</body>
+</html>

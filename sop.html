@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZAU SOP</title>
+<style>
+body { 
+  font-family: monospace; 
+  margin: 0; 
+  background-color: #0a0a0a; 
+  color: #fff; 
+  display: flex; 
+  flex-direction: column; 
+  min-height: 100vh; 
+}
+header { 
+  display:flex; 
+  justify-content:center; 
+  align-items:center; 
+  background-color:#1f1f1f; 
+  padding:0.8rem; 
+  border-bottom:2px solid #444; 
+}
+header h1 { font-size:1.8rem; margin:0; }
+.container { 
+  flex: 1; 
+  padding: 1rem; 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  gap: 0.8rem;
+}
+.sop-button {
+  padding: 0.8rem 1.5rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #fff;
+  background-color: #555; /* Gray buttons for SOPs */
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 320px;
+  text-align: left;
+  transition: background-color 0.2s;
+}
+.sop-button:hover {
+  background-color: #777;
+}
+.footer { 
+  background-color:#1f1f1f; 
+  border-top:2px solid #444; 
+  display:flex; 
+  justify-content:center; 
+  padding:0.75rem 0; 
+  gap:0.5rem; 
+}
+.footer a { 
+  padding:0.5rem 1.5rem; 
+  background-color:#18B28E; /* Keep footer green */
+  color:#fff; 
+  text-decoration:none; 
+  border-radius:5px; 
+  font-weight:bold; 
+  font-size:1.2rem; 
+  transition:background-color 0.2s; 
+}
+.footer a:hover { background-color:#139770; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>ZAU SOP</h1>
+</header>
+
+<div class="container">
+  <button class="sop-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1752685974306-vZAU%20C90%20TRACON%20SOP%207110.65B.pdf','_blank')">SOP - C90 7110.65B</button>
+  <button class="sop-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1745773789636-vZAU%20Great%20Lakes%20TRACON%20SOP%207110.65A.pdf','_blank')">SOP - Great Lakes TRACON 7110.65A</button>
+  <button class="sop-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1749607383039-vZAU%20MDW%20ATCT%20SOP%207110.65C.pdf','_blank')">SOP - MDW ATCT 7110.65C</button>
+  <button class="sop-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1744128694938-vZAU%20MKE%20ATCT%20SOP%207110.65A.pdf','_blank')">SOP - MKE ATCT/TRACON 7110.65A</button>
+  <button class="sop-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1753489393382-vZAU%20Minor%20Fields%20SOP%207110.65B.pdf','_blank')">SOP - Minor Fields 7110.65B</button>
+  <button class="sop-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1744128661843-vZAU%20ORD%20ATCT%20SOP%207110.65B.pdf','_blank')">SOP - ORD ATCT 7110.65B</button>
+  <button class="sop-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1753564027888-vZAU%20PWK%20ATCT%20SOP%207110.65A.pdf','_blank')">SOP - PWK ATCT 7110.65A</button>
+  <button class="sop-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1753564041781-vZAU%20RFD%20ATCT%20SOP%207110.65A.pdf','_blank')">SOP - RFD ATCT/TRACON 7110.65A</button>
+  <button class="sop-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1753908844379-vZAU%20SBN%20ATCT%20SOP%207110.65A.pdf','_blank')">SOP - SBN ATCT/TRACON 7110.65A</button>
+  <button class="sop-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1750544521070-vZAU%20Chicago%20Center%20SOP%207110.65B.pdf','_blank')">SOP - ZAU Chicago Center SOP 7110.65B</button>
+</div>
+
+<div class="footer">
+  <a href="index.html">SIA</a>
+  <a href="wx.html">WX</a>
+  <a href="sop.html">SOP</a>
+  <a href="pireps.html">PIREPS</a>
+  <a href="brief.html">BRIEF</a>
+  <a href="tmu.html">TMU</a>
+</div>
+
+</body>
+</html>

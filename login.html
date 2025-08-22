@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZAU SIA IDS</title>
+<style>
+body {
+  font-family: monospace;
+  margin: 0;
+  background-color: #0a0a0a;
+  color: #fff;
+  padding-bottom: 100px; /* space for footer */
+}
+header {
+  background-color: #1f1f1f;
+  padding: 0.5rem;
+  border-bottom: 2px solid #444;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+header h1 { font-size:1.8rem; margin:0; }
+select {
+  font-size:1.2rem;
+  padding:0.25rem 0.5rem;
+  border-radius:5px;
+  border:none;
+  background-color:#333;
+  color:#fff;
+}
+#localTimeHeader {
+  margin-left:1rem;
+  font-weight:bold;
+  font-size:1.2rem;
+  color:#fff;
+}
+#userInfo {
+  font-size:1.2rem;
+  font-weight:bold;
+  color:#18B28E;
+}
+.airport-list {
+  width:100%;
+  margin-top:1rem;
+}
+.airport-line {
+  display:flex;
+  flex-direction:row;
+  justify-content:flex-start;
+  padding:0.3rem 0.5rem;
+  font-size:1.4rem;
+  align-items:center;
+  gap:1rem;
+  border-bottom:1px solid #333;
+}
+.code { width:100px; font-weight:bold; color:#fff; }
+.atis { width:40px; font-weight:bold; color:#ffdd00; cursor:pointer; text-align:center;}
+.flow { width:160px; color:#00ffff; display:flex; flex-direction:column; gap:0.1rem; cursor:pointer;}
+.flow span{display:block;}
+.winds { width:120px; color:#00ff00; font-weight:bold;}
+.altimeter { width:80px; color:#ff6600; font-weight:bold;}
+.metar { flex:1; color:#ccc; overflow-x:auto;}
+.footer {
+  position: fixed;
+  bottom:0; left:0; width:100%;
+  background-color:#1f1f1f;
+  border-top:2px solid #444;
+  display:flex;
+  justify-content:center;
+  padding:0.75rem 0;
+  gap:0.5rem;
+  z-index:1000;
+}
+.footer a{
+  padding:0.5rem 1.5rem;
+  background-color: #18B28E;
+  color: #fff;
+  text-decoration: none;
+  border-radius:5px;
+  font-weight:bold;
+  font-size:1.2rem;
+  transition: background-color 0.2s;
+}
+.footer a:hover { background-color:#139770; }
+
+#inputModal {
+  display:none;
+  position:fixed;
+  z-index:2000;
+  left:0; top:0;
+  width:100%; height:100%;
+  background-color: rgba(0,0,0,0.7);
+  justify-content:center;
+  align-items:center;
+}
+#inputModalContent {
+  background-color:#1f1f1f;
+  padding:1.5rem;
+  border-radius:10px;
+  text-align:center;
+  width:300px;
+  border:2px solid #ffdd00;
+}
+#modalInput {
+  font-size:1.2rem;
+  text-align:center;
+  width:80%;
+  padding:0.25rem;
+  margin-bottom:1rem;
+}
+#inputModal button {
+  font-size:1rem;
+  padding:0.4rem 1rem;
+  margin:0 0.25rem;
+  border-radius:5px;
+  border:none;
+  cursor:pointer;
+  font-weight:bold;
+}
+#submitBtn { background-color:#00ff00;color:#000;}
+#cancelBtn { background-color:#ff0000;color:#fff;}
+</style>
+</head>
+<body>
+<script>
+// --- FORCE LOGIN ---
+const position = localStorage.getItem("positionWorking");
+const operator = localStorage.getItem("operatorInitials");
+if (!position || !operator) {
+  window.location.href = "login.html";
+}
+</script>
+
+<header>
+  <h1>ZAU SIA IDS</h1>
+  <div id="userInfo">
+    <!-- Show signed-in user -->
+    <span id="userPosition"></span> - <span id="userOperator"></span>
+  </div>
+  <select id="sectorSelect">
+    <option>Chicago TRACON (C90)</option>
+    <option>Great Lakes TRACON (AZO)</option>
+    <option>South Bend TRACON (SBN)</option>
+    <option>Des Moines TRACON (DSM)</option>
+    <option>Peoria TRACON (PIA)</option>
+    <option>Quad Cities TRACON (MLI)</option>
+    <option>Springfield TRACON (SPI)</option>
+    <option>Milwaukee TRACON (MKE)</option>
+    <option>Madison TRACON (MSN)</option>
+    <option>Cedar Rapids TRACON (CID)</option>
+    <option>ZAU Center High</option>
+    <option>ZAU Center Low</option>
+    <option>ZAU Center</option>
+  </select>
+  <span id="localTimeHeader">--:--:--L</span>
+</header>
+
+<div class="airport-list" id="airportList"></div>
+
+<div class="footer">
+  <a href="index.html">SIA</a>
+  <a href="wx.html">WX</a>
+  <a href="sop.html">SOP</a>
+  <a href="pireps.html">PIREPS</a>
+  <a href="brief.html">BRIEF</a>
+</div>
+
+<div id="inputModal">
+  <div id="inputModalContent">
+    <p id="modalTitle">Enter value:</p>
+    <input type="text" id="modalInput" maxlength="10">
+    <br>
+    <button id="submitBtn">Submit</button>
+    <button id="cancelBtn">Cancel</button>
+  </div>
+</div>
+
+<script>
+const apiKey = "gSWFcq87dqsQjDxyR6huSD8j1zuvKkXYzLE9GKSBqYc";
+const sectors = {
+  "Chicago TRACON (C90)": ["KORD","KMDW","KPWK","KDPA","KARR","KGYY","KUGN"],
+  "Great Lakes TRACON (AZO)": ["KAZO","KBTL"],
+  "South Bend TRACON (SBN)": ["KSBN"],
+  "Des Moines TRACON (DSM)": ["KDSM"],
+  "Peoria TRACON (PIA)": ["KPIA"],
+  "Quad Cities TRACON (MLI)": ["KMLI"],
+  "Springfield TRACON (SPI)": ["KSPI"],
+  "Milwaukee TRACON (MKE)": ["KMKE","KMWC"],
+  "Madison TRACON (MSN)": ["KMSN"],
+  "Cedar Rapids TRACON (CID)": ["KCID"],
+  "ZAU Center High": [],
+  "ZAU Center Low": [],
+  "ZAU Center": []
+};
+const airportList = document.getElementById("airportList");
+let currentElem = null;
+
+// Show signed-in user
+document.getElementById("userPosition").textContent = position;
+document.getElementById("userOperator").textContent = operator;
+
+function createAirportLine(icao){
+  return `
+  <div class="airport-line" data-icao="${icao}">
+    <span class="code">${icao.replace('K','')}</span>
+    <span class="atis" id="atis-${icao}">-</span>
+    <span class="flow" id="flow-${icao}">
+      <span class="arr">ARR: -</span>
+      <span class="dep">DEP: -</span>
+    </span>
+    <span class="winds" id="wind-${icao}">-</span>
+    <span class="altimeter" id="alt-${icao}">-</span>
+    <span class="metar" id="metar-${icao}">Loading...</span>
+  </div>`;
+}
+
+function loadSector(sector){
+  airportList.innerHTML = sectors[sector].map(createAirportLine).join("");
+  const airports = sectors[sector];
+  airports.forEach(icao=>{
+    fetch(`https://avwx.rest/api/metar/${icao}?options=info,translate`, {headers:{Authorization:`Bearer ${apiKey}`}})
+    .then(res=>res.json())
+    .then(data=>{
+      const metarElem=document.getElementById(`metar-${icao}`);
+      const windElem=document.getElementById(`wind-${icao}`);
+      const altElem=document.getElementById(`alt-${icao}`);
+      if(data && data.raw){
+        metarElem.textContent = data.raw;
+        altElem.textContent = data.altimeter?.value ? data.altimeter.value.toFixed(2) : "-";
+
+        // WIND FIX
+        let windText="-";
+        if(data.wind?.degrees!=null && data.wind?.speed!=null) windText=`${data.wind.degrees}° @ ${data.wind.speed}kt`;
+        else if(data.raw){
+          const match=data.raw.match(/(VRB|\d{3})(\d{2,3})(G\d{2,3})?KT/);
+          if(match){
+            const dir = match[1]==="VRB"?"VRB":match[1]+"°";
+            windText = `${dir} @ ${match[2]}kt`;
+            if(match[3]) windText += ` G${match[3].slice(1)}kt`;
+          }
+        }
+        windElem.textContent = windText;
+      } else {
+        metarElem.textContent="No METAR"; windElem.textContent="-"; altElem.textContent="-";
+      }
+    }).catch(console.error);
+
+    const atisElem=document.getElementById(`atis-${icao}`);
+    atisElem.addEventListener("click",()=>openModal(atisElem,`ATIS letter for ${icao}`));
+    const flowElem=document.getElementById(`flow-${icao}`);
+    flowElem.querySelector(".arr").addEventListener("click",()=>openModal(flowElem.querySelector(".arr"),`ARR flow for ${icao}`));
+    flowElem.querySelector(".dep").addEventListener("click",()=>openModal(flowElem.querySelector(".dep"),`DEP flow for ${icao}`));
+  });
+}
+
+// Modal
+const modal=document.getElementById("inputModal");
+const modalTitle=document.getElementById("modalTitle");
+const modalInput=document.getElementById("modalInput");
+const submitBtn=document.getElementById("submitBtn");
+const cancelBtn=document.getElementById("cancelBtn");
+
+function openModal(elem,title){
+  currentElem=elem;
+  modalTitle.textContent=`Enter ${title}:`;
+  modalInput.value=currentElem.textContent.replace(/(ARR: |DEP: )/,'')==='-'?'':currentElem.textContent.replace(/(ARR: |DEP: )/,'');
+  modal.style.display="flex";
+  modalInput.focus();
+}
+
+submitBtn.addEventListener("click",()=>{
+  if(currentElem){
+    const val=modalInput.value.trim();
+    if(currentElem.classList.contains("atis")) currentElem.textContent=val?val.toUpperCase():'-';
+    else if(currentElem.classList.contains("arr")) currentElem.textContent="ARR: "+(val?val:'-');
+    else if(currentElem.classList.contains("dep")) currentElem.textContent="DEP: "+(val?val:'-');
+    modal.style.display="none";
+  }
+});
+cancelBtn.addEventListener("click",()=>{modal.style.display="none";});
+window.addEventListener("click",(e)=>{if(e.target===modal) modal.style.display="none";});
+window.addEventListener("keydown",(e)=>{
+  if(modal.style.display==="flex"){
+    if(e.key==="Enter") submitBtn.click();
+    if(e.key==="Escape") cancelBtn.click();
+  }
+});
+
+// Header clock hh:mm:ss CST
+function updateHeaderTime(){
+  const now = new Date();
+  const utc = now.getTime() + now.getTimezoneOffset()*60000;
+  const cstOffset = -6;
+  const cst = new Date(utc + 3600000*cstOffset);
+  const hours = cst.getHours().toString().padStart(2,'0');
+  const minutes = cst.getMinutes().toString().padStart(2,'0');
+  const seconds = cst.getSeconds().toString().padStart(2,'0');
+  document.getElementById('localTimeHeader').textContent = `${hours}:${minutes}:${seconds}L`;
+}
+updateHeaderTime();
+setInterval(updateHeaderTime,1000);
+
+const sectorSelect=document.getElementById("sectorSelect");
+sectorSelect.addEventListener("change",(e)=>loadSector(e.target.value));
+loadSector(sectorSelect.value);
+</script>
+</body>
+</html>
