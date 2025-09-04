@@ -10,7 +10,7 @@
     margin:0; 
     background-color:#0a0a0a; 
     color:#fff; 
-    overflow-y:auto; /* enable scrolling */
+    overflow-y:auto; 
   }
   header { display:flex; justify-content:space-between; align-items:center; background-color:#1f1f1f; padding:1rem; border-bottom:2px solid #444; }
   header h1 { font-size:1.8rem; margin:0; }
@@ -18,26 +18,46 @@
   #logoutBtn { padding:0.4rem 1rem; background-color:#ff0000; color:#fff; border-radius:5px; border:none; cursor:pointer; }
   #logoutBtn:hover { background-color:#cc0000; }
 
-  /* Keep the image natural, no stretching */
+  main {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  /* Left: Active Split Image */
   #activeSplit { 
     width: 100%; 
     max-width: 600px; 
     display: block; 
-    margin: 1rem auto; 
     border: 2px solid #4ade80; 
     border-radius: 5px; 
-    height: auto; /* maintain aspect ratio */
+    height: auto; 
   }
 
-  #tmuBox { margin:1rem auto; padding:1rem; border:2px solid #4ade80; border-radius:8px; background-color:#1f1f1f; max-width:600px; max-height:400px; overflow-y:auto; }
-  #tmuBox div { padding:0.25rem 0; border-bottom:1px solid #333; }
-  #tmuInput { width:100%; padding:0.5rem; font-size:1rem; margin-top:0.5rem; background-color:#0a0a0a; color:#fff; border:2px solid #4ade80; border-radius:5px; display:block; }
-  #sendBtn, #clearBtn { padding:0.4rem 1rem; font-weight:bold; margin-top:0.5rem; border:none; border-radius:5px; cursor:pointer; }
-  #sendBtn { background-color:#00ff00; color:#000; }
-  #sendBtn:hover { background-color:#00cc00; }
-  #clearBtn { background-color:#ff0000; color:#fff; margin-left:0.5rem; }
-  #clearBtn:hover { background-color:#cc0000; }
+  /* Right: Controller list */
+  #controllerPane {
+    flex: 1;
+    padding: 1rem;
+    background-color: #111;
+    border: 2px solid #333;
+    border-radius: 5px;
+    max-height: 700px;
+    overflow-y: auto;
+  }
+  #controllerPane h2 {
+    margin-top: 0;
+    color: #4cafef;
+  }
+  .controller {
+    background: #1a1a1a;
+    padding: 0.5rem;
+    margin: 0.5rem 0;
+    border-radius: 6px;
+    border: 1px solid #333;
+  }
 
+  /* Footer */
   .footer { position:fixed; bottom:0; left:0; width:100%; background-color:#1f1f1f; border-top:2px solid #444; display:flex; justify-content:center; padding:0.75rem 0; gap:0.5rem; z-index:1000; }
   .footer a { padding:0.5rem 1.5rem; background-color:#18B28E; color:#fff; text-decoration:none; border-radius:5px; font-weight:bold; font-size:1.2rem; transition:background-color 0.2s; }
   .footer a:hover { background-color:#139770; }
@@ -53,17 +73,31 @@
   </div>
 </header>
 
-<!-- Active Split Image -->
-<img id="activeSplit" src="https://i.ibb.co/x8XKMM8y/image.png" alt="Active Split">
+<main>
+  <!-- Left: Active Split -->
+  <div style="flex:1; display:flex; justify-content:center; align-items:flex-start;">
+    <img id="activeSplit" src="https://i.ibb.co/x8XKMM8y/image.png" alt="Active Split">
+  </div>
 
-<!-- TMU Box and Input directly under the image -->
-<div id="tmuBox"></div>
-<input type="text" id="tmuInput" placeholder="Enter TMU message here...">
-<button id="sendBtn">Send</button>
-<button id="clearBtn">Clear</button>
+  <!-- Right: ZAU Controllers -->
+  <div id="controllerPane">
+    <h2>ZAU Controllers Online</h2>
+    <div id="controllerList"><p>Loading...</p></div>
+  </div>
+</main>
 
-<!-- Spacer to allow scrolling below TMU input -->
-<div style="height:600px;"></div>
+<!-- Centered Discord widget (full width below panes) -->
+<div style="display:flex; justify-content:center; margin:1rem auto;">
+  <widgetbot
+    server="1411480998771691592"
+    channel="1411481254242549943"
+    width="70%"
+    height="700"
+  ></widgetbot>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@widgetbot/html-embed"></script>
+
+<div style="height:50px;"></div>
 
 <div class="footer">
   <a href="index.html">SIA</a>
@@ -73,73 +107,58 @@
   <a href="brief.html">BRIEF</a>
 </div>
 
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyBQhVG2_qIDV1R-fYuKkNdWxGriVImW5xs",
-    authDomain: "zauids.firebaseapp.com",
-    databaseURL: "https://zauids-default-rtdb.firebaseio.com",
-    projectId: "zauids",
-    storageBucket: "zauids.firebasestorage.app",
-    messagingSenderId: "903788512771",
-    appId: "1:903788512771:web:562b3abc452bf378b4b036",
-    measurementId: "G-RDV11VC8Z1"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
-
-  const tmuBox = document.getElementById('tmuBox');
-  const tmuInput = document.getElementById('tmuInput');
-  const sendBtn = document.getElementById('sendBtn');
-  const clearBtn = document.getElementById('clearBtn');
-  const userInfo = document.getElementById('userInfo');
-  const logoutBtn = document.getElementById('logoutBtn');
-
-  const allowedPositions = ["ZAU_TMU", "CHI_TMU"];
-  const allowedIns = ["CS", "AF"];
-
+  // Session check
   const position = localStorage.getItem("position");
   const initials = localStorage.getItem("initials");
-  if(!position || !initials) { alert("Please login first."); window.location.href="index.html"; }
-  userInfo.textContent = `${position} (${initials})`;
+  if(!position || !initials) { 
+    alert("Please login first."); 
+    window.location.href="index.html"; 
+  }
+  document.getElementById('userInfo').textContent = `${position} (${initials})`;
 
-  logoutBtn.addEventListener("click", ()=>{ localStorage.clear(); window.location.href="index.html"; });
+  document.getElementById("logoutBtn").addEventListener("click", ()=>{
+    localStorage.clear();
+    window.location.href="index.html";
+  });
 
-  const canEdit = allowedPositions.includes(position) || allowedIns.includes(initials);
-  if(!canEdit){ tmuInput.disabled = true; sendBtn.disabled = true; clearBtn.disabled = true; }
+  // Fetch ZAU controllers
+  async function fetchZAUControllers() {
+    try {
+      const resp = await fetch('https://data.vatsim.net/v3/vatsim-data.json');
+      if (!resp.ok) throw new Error('HTTP status ' + resp.status);
+      const data = await resp.json();
+      return data.controllers?.filter(c => c.artccId === 'ZAU') || [];
+    } catch (err) {
+      console.error('Error fetching VATSIM data:', err);
+      return [];
+    }
+  }
 
-  // Disable copy/paste/cut
-  tmuInput.addEventListener('copy', e => e.preventDefault());
-  tmuInput.addEventListener('paste', e => e.preventDefault());
-  tmuInput.addEventListener('cut', e => e.preventDefault());
-
-  const messagesRef = db.ref('tmuMessages');
-  messagesRef.on('value', snapshot=>{
-    const msgs = snapshot.val() || [];
-    tmuBox.innerHTML = '';
-    msgs.forEach(m=>{
-      const div = document.createElement('div');
-      div.textContent = m.text;
-      tmuBox.appendChild(div);
+  // Display controllers
+  function displayControllers(ctrls) {
+    const list = document.getElementById('controllerList');
+    list.innerHTML = '';
+    if (ctrls.length === 0) {
+      list.innerHTML = '<p>No ZAU controllers online currently.</p>';
+      return;
+    }
+    ctrls.forEach(c => {
+      const d = document.createElement('div');
+      d.className = 'controller';
+      d.textContent = `${c.callsign} — ${c.name}${c.frequency ? ' (' + c.frequency + ')' : ''}`;
+      list.appendChild(d);
     });
-    tmuBox.scrollTop = tmuBox.scrollHeight;
-  });
+  }
 
-  sendBtn.addEventListener('click', ()=>{
-    const msg = tmuInput.value.trim();
-    if(msg){
-      messagesRef.push({ text: msg, sender: `${position}(${initials})`, timestamp: Date.now() });
-      tmuInput.value = '';
-    }
-  });
+  async function init() {
+    const ctrls = await fetchZAUControllers();
+    displayControllers(ctrls);
+  }
 
-  clearBtn.addEventListener('click', ()=>{
-    if(canEdit && confirm("Are you sure you want to clear all TMU messages?")){
-      messagesRef.remove();
-    }
-  });
+  init();
+  setInterval(init, 15000); // refresh every 15s
 </script>
+
 </body>
 </html>
