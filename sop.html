@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ZAU SOP</title>
+<title>ZAU DOCS</title>
 <style>
 body { 
   font-family: monospace; 
@@ -36,7 +36,33 @@ header h1 { font-size:1.8rem; margin:0; }
   font-size: 1.2rem;
   font-weight: bold;
   color: #fff;
-  background-color: #555; /* Gray buttons for SOPs */
+  background-color: #b90000; /* Gray buttons for SOPs */
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 320px;
+  text-align: left;
+  transition: background-color 0.2s;
+}
+.loa-button {
+  padding: 0.8rem 1.5rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #fff;
+  background-color: #000397; /* Gray buttons for SOPs */
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 320px;
+  text-align: left;
+  transition: background-color 0.2s;
+}
+.ref-button {
+  padding: 0.8rem 1.5rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #000000;
+  background-color: #ffffff; /* Gray buttons for SOPs */
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -45,6 +71,12 @@ header h1 { font-size:1.8rem; margin:0; }
   transition: background-color 0.2s;
 }
 .sop-button:hover {
+  background-color: #777;
+}
+.loa-button:hover {
+  background-color: #777;
+}
+.ref-button:hover {
   background-color: #777;
 }
 .footer { 
@@ -66,25 +98,88 @@ header h1 { font-size:1.8rem; margin:0; }
   transition:background-color 0.2s; 
 }
 .footer a:hover { background-color:#139770; }
+.scroll-box {
+      width: 300px;          /* set width */
+      height: min-vh-100;         /* set height */
+      border: 1px solid #000000; /* optional border */
+      padding: 10px;
+      overflow-y: scroll;     /* vertical scrollbar */
+      overflow-x: hidden;     /* no horizontal scrollbar */
+      background: #000000;    /* background color */
+}
+.row {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;               
+  flex-wrap: nowrap;        /* prevent wrapping */
+  overflow-x: auto;         /* enable horizontal scroll */
+  padding-bottom: 1rem;     /* space under scrollbar */
+}
+
+.col {
+  flex: 0 0 auto;           /* prevent shrinking */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 </style>
 </head>
 <body>
 
 <header>
-  <h1>ZAU SOP</h1>
+  <h1>ZAU DOCS</h1>
 </header>
 
 <div class="container">
-  <button class="sop-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1752685974306-vZAU%20C90%20TRACON%20SOP%207110.65B.pdf','_blank')">SOP - C90 7110.65B</button>
-  <button class="sop-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1745773789636-vZAU%20Great%20Lakes%20TRACON%20SOP%207110.65A.pdf','_blank')">SOP - Great Lakes TRACON 7110.65A</button>
-  <button class="sop-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1749607383039-vZAU%20MDW%20ATCT%20SOP%207110.65C.pdf','_blank')">SOP - MDW ATCT 7110.65C</button>
-  <button class="sop-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1744128694938-vZAU%20MKE%20ATCT%20SOP%207110.65A.pdf','_blank')">SOP - MKE ATCT/TRACON 7110.65A</button>
-  <button class="sop-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1753489393382-vZAU%20Minor%20Fields%20SOP%207110.65B.pdf','_blank')">SOP - Minor Fields 7110.65B</button>
-  <button class="sop-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1744128661843-vZAU%20ORD%20ATCT%20SOP%207110.65B.pdf','_blank')">SOP - ORD ATCT 7110.65B</button>
-  <button class="sop-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1753564027888-vZAU%20PWK%20ATCT%20SOP%207110.65A.pdf','_blank')">SOP - PWK ATCT 7110.65A</button>
-  <button class="sop-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1753564041781-vZAU%20RFD%20ATCT%20SOP%207110.65A.pdf','_blank')">SOP - RFD ATCT/TRACON 7110.65A</button>
-  <button class="sop-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1753908844379-vZAU%20SBN%20ATCT%20SOP%207110.65A.pdf','_blank')">SOP - SBN ATCT/TRACON 7110.65A</button>
-  <button class="sop-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1750544521070-vZAU%20Chicago%20Center%20SOP%207110.65B.pdf','_blank')">SOP - ZAU Chicago Center SOP 7110.65B</button>
+  <div class="row">
+    <div class="col">
+        <h2>SOPs</h2>
+        <button class="sop-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1752685974306-vZAU%20C90%20TRACON%20SOP%207110.65B.pdf','_blank')">SOP - C90 7110.65B</button>
+        <button class="sop-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1750544521070-vZAU%20Chicago%20Center%20SOP%207110.65B.pdf','_blank')">SOP - ZAU Chicago Center SOP 7110.65B</button>
+        <button class="sop-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1749607383039-vZAU%20MDW%20ATCT%20SOP%207110.65C.pdf','_blank')">SOP - MDW ATCT 7110.65C</button>
+        <button class="sop-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1744128694938-vZAU%20MKE%20ATCT%20SOP%207110.65A.pdf','_blank')">SOP - MKE ATCT/TRACON 7110.65A</button>
+        <br>
+        <button class="sop-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1745773789636-vZAU%20Great%20Lakes%20TRACON%20SOP%207110.65A.pdf','_blank')">SOP - Great Lakes TRACON 7110.65A</button>
+        <button class="sop-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1753489393382-vZAU%20Minor%20Fields%20SOP%207110.65B.pdf','_blank')">SOP - Minor Fields 7110.65B</button>
+        <button class="sop-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1744128661843-vZAU%20ORD%20ATCT%20SOP%207110.65B.pdf','_blank')">SOP - ORD ATCT 7110.65B</button>
+        <button class="sop-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1753564027888-vZAU%20PWK%20ATCT%20SOP%207110.65A.pdf','_blank')">SOP - PWK ATCT 7110.65A</button>
+        <button class="sop-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1753564041781-vZAU%20RFD%20ATCT%20SOP%207110.65A.pdf','_blank')">SOP - RFD ATCT/TRACON 7110.65A</button>
+        <button class="sop-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1753908844379-vZAU%20SBN%20ATCT%20SOP%207110.65A.pdf','_blank')">SOP - SBN ATCT/TRACON 7110.65A</button>
+    </div>
+    <div class="col">
+        <h2>LOAs</h2>
+        <button class="loa-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1753911297777-vZAU%20ARTCC%20LOA%20Reference.pdf','_blank')">LOA REFERENCE DOC</button>
+        <br>
+        <button class="loa-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1752327194508-vZAU%20C90-MDW%20ATCT%20LOA.pdf')">LOA - C90-MDW</button>
+        <button class="loa-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1744333219040-vZAU%20C90-MKE%20ATCT%20LOA.pdf')">LOA - C90-MKE</button>
+        <button class="loa-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1752327657695-vZAU%20C90-ORD%20ATCT%20LOA.pdf')">LOA - C90-ORD</button>
+        <button class="loa-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1753281743168-vZAU%20C90-PWK%20ATCT%20LOA.pdf')">LOA - C90-PWK</button>
+        <button class="loa-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1752680625304-vZAU%20C90-RFD%20ATCT%20LOA.pdf')">LOA - C90-RFD</button>
+        <button class="loa-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1753971022968-vZAU%20C90-SBN%20ATCT%20LOA.pdf')">LOA - C90-SBN</button>
+        <br>
+        <button class="loa-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1753919083078-vZAU%20ZAU-C90%20LOA.pdf')">LOA - ZAU-C90</button>
+        <button class="loa-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1739985481597-vZAU%20ZAU-MKE%20ATCT%20LOA.pdf')">LOA - ZAU-MKE</button>
+        <button class="loa-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1750550980975-vZAU-vZID%20ARTCC%20LOA.pdf')">LOA - ZAU-ZID</button>
+        <button class="loa-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1739378362022-vZAU-vZKC%20ARTCC%20LOA.pdf')">LOA - ZAU-ZKC</button>
+        <button class="loa-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1739983326298-vZAU-vZMP%20ARTCC%20LOA.pdf')">LOA - ZAU-ZMP</button>
+        <button class="loa-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1741970941500-vZAU-vZMP%20Approach%20Controls%20LOA.pdf')">LOA - ZAU-ZMP Approach Controls</button>
+        <button class="loa-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1739732628365-vZAU-vZOB%20ARTCC%20LOA.pdf')">LOA - ZAU-ZOB</button>
+        <button class="loa-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1739378449613-vZAU-vZOB%20AZO%20ATCT%20LOA.pdf')">LOA - ZAU-ZOB/AZO</button>
+    </div>
+    <div class="col">
+        <h2>REFERENCES</h2>
+        <button class="ref-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1754602669998-vZAU%20CRC%20Quick%20Reference.pdf')">CRC Quick Reference</button>
+        <button class="ref-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1747058907935-vZAU%20Routing%20Maps.zip')">Routing Maps</button>
+        <br>
+        <button class="ref-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1754589355907-ORD%20MDW%20STARs.pdf')">ORD & MDW STARs</button>
+        <button class="ref-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1747059198639-vZAU%20C90%20Diagrams.zip')">C90 Diagrams</button>
+        <br>
+        <button class="ref-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1754602669998-vZAU%20CRC%20Quick%20Reference.pdf')">Center - High Sectors</button>
+        <button class="ref-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1747058853336-vZAU%20Low%20Center%20Sectors.pdf')">Center - Low Sectors</button>
+        <button class="ref-button" onclick="window.open('https://zauartcc.sfo3.cdn.digitaloceanspaces.com/production/documents/1747058522839-vZAU%20Center%20Split%20Diagrams.zip')">Center Split Diagrams</button>
+    </div>
+  </div>
 </div>
 
 <div class="footer">
@@ -98,3 +193,4 @@ header h1 { font-size:1.8rem; margin:0; }
 
 </body>
 </html>
+
