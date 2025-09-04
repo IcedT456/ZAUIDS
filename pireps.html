@@ -179,20 +179,21 @@ header h1 { font-size: 1.8rem; margin:0; }
 <!-- Firebase -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
 
-// FIREBASE CONFIG
+// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyBQhVG2_qIDV1R-fYuKkNdWxGriVImW5xs",
   authDomain: "zauids.firebaseapp.com",
+  databaseURL: "https://zauids-default-rtdb.firebaseio.com",
   projectId: "zauids",
-  storageBucket: "zauids.appspot.com",
+  storageBucket: "zauids.firebasestorage.app",
   messagingSenderId: "903788512771",
-  appId: "1:903788512771:web:562b3abc452bf378b4b036"
+  appId: "1:903788512771:web:562b3abc452bf378b4b036",
+  measurementId: "G-RDV11VC8Z1"
 };
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const pirepsCol = collection(db, "pireps");
+const db = getDatabase(app);
 
 // USER INFO
 const userInfo = document.getElementById("userInfo");
@@ -215,15 +216,13 @@ logoutBtn.addEventListener("click", ()=>{
 updateUser();
 
 // DISPLAY
-let pireps = [];
-function displayPireps(){
+function displayPireps(pireps){
   const list = document.getElementById("pirepList");
   list.innerHTML = "";
-  const sorted = pireps.sort((a,b)=>{
+  pireps.sort((a,b)=>{
     if(a.uauua===b.uauua) return b.timestamp - a.timestamp;
     return a.uauua === "UA" ? -1 : 1;
-  });
-  sorted.forEach(p=>{
+  }).forEach(p=>{
     const div = document.createElement("div");
     div.className="pirep-item";
     const zuluTime = new Date(p.timestamp).toISOString().slice(11,19)+"Z";
@@ -246,7 +245,8 @@ function displayPireps(){
 }
 
 // FORM SUBMISSION
-document.getElementById("pirepForm").addEventListener("submit", async e=>{
+const pirepsRef = ref(db, "pireps");
+document.getElementById("pirepForm").addEventListener("submit", e=>{
   e.preventDefault();
   const p = {
     uauua: document.getElementById("uauua").value,
@@ -264,16 +264,15 @@ document.getElementById("pirepForm").addEventListener("submit", async e=>{
     timestamp: Date.now()
   };
   if(!p.uauua||!p.ov||!p.tm||!p.fl||!p.tp){ alert("Fields 1-5 are mandatory."); return; }
-  await addDoc(pirepsCol, p);
+  push(pirepsRef, p);
   document.getElementById("pirepForm").reset();
 });
 
 // REALTIME SYNC
-const q = query(pirepsCol, orderBy("timestamp", "desc"));
-onSnapshot(q, snapshot=>{
-  pireps = [];
-  snapshot.forEach(docSnap => pireps.push(docSnap.data()));
-  displayPireps();
+onValue(pirepsRef, snapshot=>{
+  const pirepsArr = [];
+  snapshot.forEach(childSnap => pirepsArr.push(childSnap.val()));
+  displayPireps(pirepsArr);
 });
 </script>
 
